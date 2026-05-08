@@ -126,67 +126,67 @@
   ],
   "gallery": [
     {
-      "src": "http://localhost:5001/uploads/1778194033192-g12.jpg",
+      "src": "/uploads/1778194033192-g12.jpg",
       "title": "Birthday Setup",
       "category": "Birthday"
     },
     {
-      "src": "http://localhost:5001/uploads/1778194071521-g13.jpg",
+      "src": "/uploads/1778194071521-g13.jpg",
       "title": "Corporate Event Dining",
       "category": "Corporate"
     },
     {
-      "src": "http://localhost:5001/uploads/1778251593512-g1.jpg",
+      "src": "/uploads/1778251593512-g1.jpg",
       "title": "Ugba Catering",
       "category": "Events    "
     },
     {
-      "src": "http://localhost:5001/uploads/1778251656811-g2.jpg",
+      "src": "/uploads/1778251656811-g2.jpg",
       "title": "Executive Corporate Dining",
       "category": "Corporate"
     },
     {
-      "src": "http://localhost:5001/uploads/1778251807999-g3.jpg",
+      "src": "/uploads/1778251807999-g3.jpg",
       "title": "Private Chef Experience",
       "category": "Private Dining     "
     },
     {
-      "src": "http://localhost:5001/uploads/1778251844215-g4.jpg",
+      "src": "/uploads/1778251844215-g4.jpg",
       "title": "Outdoor Shawarma Event",
       "category": "Outdoor Events\""
     },
     {
-      "src": "http://localhost:5001/uploads/1778251868501-g5.jpg",
+      "src": "/uploads/1778251868501-g5.jpg",
       "title": "Fine Dining Presentation",
       "category": "Cuisine"
     },
     {
-      "src": "http://localhost:5001/uploads/1778251963666-g6.jpg",
+      "src": "/uploads/1778251963666-g6.jpg",
       "title": "Elegant Dessert Table",
       "category": "Desserts    "
     },
     {
-      "src": "http://localhost:5001/uploads/1778252002942-g8.jpg",
+      "src": "/uploads/1778252002942-g8.jpg",
       "title": "Elegant Event Setup",
       "category": "Corporate"
     },
     {
-      "src": "http://localhost:5001/uploads/1778252044465-g9.jpg",
+      "src": "/uploads/1778252044465-g9.jpg",
       "title": "Drinks & Beverages",
       "category": "Drinks"
     },
     {
-      "src": "http://localhost:5001/uploads/1778252236411-g10.jpg",
+      "src": "/uploads/1778252236411-g10.jpg",
       "title": "Nigerian Cuisine",
       "category": "Cuisine    "
     },
     {
-      "src": "http://localhost:5001/uploads/1778252274164-g11.jpg",
+      "src": "/uploads/1778252274164-g11.jpg",
       "title": " Luxury Wedding Cuisine",
       "category": "Wedding"
     },
     {
-      "src": "http://localhost:5001/uploads/1778253242765-about.jpg",
+      "src": "/uploads/1778253242765-about.jpg",
       "title": "Meet Our Chef",
       "category": "Chef Chi"
     }
