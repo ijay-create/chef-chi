@@ -1,0 +1,187 @@
+/* =========================
+   AUTH PAGE BACKGROUND
+========================= */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: radial-gradient(circle at top, #111 0%, #050505 100%);
+  padding: 20px;
+}
+
+/* =========================
+   AUTH CARD
+========================= */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+
+  padding: 35px;
+  border-radius: 18px;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+
+  animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   HEADER TEXT
+========================= */
+.auth-card h2 {
+  font-size: 26px;
+  color: #d4af37; /* gold luxury tone */
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-card p {
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+/* =========================
+   ERROR
+========================= */
+.auth-error {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  color: #ff4d4d;
+
+  padding: 10px;
+  border-radius: 8px;
+
+  font-size: 13px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* =========================
+   INPUTS
+========================= */
+.auth-card input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+
+  outline: none;
+  transition: 0.3s ease;
+}
+
+.auth-card input:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+/* =========================
+   PASSWORD FIELD
+========================= */
+.password-field {
+  position: relative;
+}
+
+.password-field span {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+
+  color: #aaa;
+  font-size: 18px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.auth-card button {
+  width: 100%;
+  padding: 12px;
+
+  border-radius: 10px;
+  border: none;
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.3s ease;
+}
+
+/* LOGIN BUTTON */
+.auth-card button:first-of-type {
+  background: linear-gradient(135deg, #d4af37, #b88a2a);
+  color: #111;
+}
+
+.auth-card button:first-of-type:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+}
+
+/* GOOGLE BUTTON */
+.auth-card button:last-of-type {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.auth-card button:last-of-type:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* =========================
+   DIVIDER
+========================= */
+.divider {
+  text-align: center;
+  margin: 15px 0;
+  color: #666;
+  font-size: 13px;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}

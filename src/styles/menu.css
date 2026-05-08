@@ -1,0 +1,243 @@
+/* ===================================
+   MENU PAGE
+=================================== */
+.menu-page {
+  width: 100%;
+  background: #faf8f5;
+  color: #111;
+}
+
+/* ===================================
+   HERO
+=================================== */
+.menu-hero {
+  height: 75vh;
+  min-height: 540px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.58);
+}
+
+.menu-overlay {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 850px;
+  padding: 0 20px;
+  color: white;
+}
+
+.menu-overlay span {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #d4af7a;
+  margin-bottom: 18px;
+}
+
+.menu-overlay h1 {
+  font-size: clamp(40px, 7vw, 74px);
+  font-family: "Playfair Display", serif;
+  margin-bottom: 18px;
+}
+
+.menu-overlay p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.9);
+}
+
+/* ===================================
+   INTRO
+=================================== */
+.menu-intro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.mini-title {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #c8a46a;
+  margin-bottom: 14px;
+  display: inline-block;
+}
+
+.menu-intro h2 {
+  font-size: clamp(34px, 5vw, 56px);
+  font-family: "Playfair Display", serif;
+  line-height: 1.2;
+}
+
+.menu-intro p {
+  line-height: 1.9;
+  color: #555;
+}
+
+/* ===================================
+   FILTERS
+=================================== */
+.menu-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-top: -100px;
+}
+
+.menu-filters button {
+  border: none;
+  background: white;
+  padding: 14px 24px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.menu-filters button.active,
+.menu-filters button:hover {
+  background: #d4af7a;
+  color: #111;
+}
+
+/* ===================================
+   GRID
+=================================== */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-top: -150px;
+}
+
+.menu-card {
+  background: white;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+}
+
+.menu-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.menu-top h3 {
+  font-size: 24px;
+  font-family: "Playfair Display", serif;
+}
+
+.menu-top span {
+  color: #d4af7a;
+  font-weight: 700;
+}
+
+.menu-line {
+  height: 1px;
+  background: #eee;
+  margin: 18px 0;
+}
+
+.menu-card p {
+  line-height: 1.8;
+  color: #555;
+}
+
+/* ===================================
+   CTA
+=================================== */
+.menu-cta {
+  margin-top: 100px;
+  padding: 110px 20px;
+  background: #111;
+  text-align: center;
+  color: white;
+}
+
+.menu-cta h2 {
+  font-size: clamp(34px, 5vw, 58px);
+  font-family: "Playfair Display", serif;
+  margin-bottom: 18px;
+}
+
+.menu-cta p {
+  max-width: 720px;
+  margin: 0 auto 30px;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.82);
+}
+
+.menu-cta a {
+  display: inline-block;
+  padding: 14px 34px;
+  border-radius: 40px;
+  background: #d4af7a;
+  color: #111;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.menu-card {
+  transition: transform 0.3s ease;
+}
+
+.menu-card:hover {
+  transform: scale(1.04);
+}
+
+/* ===================================
+   RESPONSIVE
+=================================== */
+@media (max-width: 900px) {
+  .menu-grid,
+  .menu-intro-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-hero {
+    height: 65vh;
+  }
+
+  .menu-card {
+    padding: 22px;
+  }
+
+  .menu-top h3 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-overlay h1 {
+    font-size: 34px;
+  }
+
+  .menu-filters {
+    gap: 10px;
+  }
+
+  .menu-filters button {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,246 @@
+.home {
+  width: 100%;
+  background: #faf8f5;
+  color: #111;
+  overflow-x: hidden;
+}
+
+/* ===============================
+   TRUST BAR
+================================= */
+.trust-bar {
+  background: #111;
+  color: #fff;
+  padding: 18px 0;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.trust-inner {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* ===============================
+   TAG STYLE (MICHELIN LABEL)
+================================= */
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #c8a46a;
+  margin-bottom: 10px;
+}
+
+/* ===============================
+   SECTION DEFAULT
+================================= */
+.section {
+  padding: 100px 0;
+}
+
+.subtext {
+  max-width: 700px;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #555;
+}
+
+/* ===============================
+   SERVICES GRID (ULTRA CLEAN)
+================================= */
+.final-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  margin-top: 50px;
+}
+
+@media (max-width: 1100px) {
+  .final-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .final-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===============================
+   STORY SECTION
+================================= */
+.story-section {
+  padding: 120px 0;
+  background: #fff;
+}
+
+.story-grid {
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+}
+
+.story-grid h2 {
+  font-size: clamp(30px, 5vw, 52px);
+  font-family: "Playfair Display", serif;
+  margin-bottom: 20px;
+}
+
+.story-grid p {
+  font-size: 16px;
+  line-height: 1.9;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+/* ===============================
+   STATS
+================================= */
+.story-stats {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.story-stats h3 {
+  font-size: 28px;
+  color: #111;
+}
+
+.story-stats span {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #888;
+}
+
+/* ===============================
+   EXPERIENCE SECTION
+================================= */
+.experience-section {
+  background: #0f0f0f;
+  color: #fff;
+  padding: 120px 0;
+}
+
+.experience-grid {
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+}
+
+.experience-grid h2 {
+  font-size: clamp(30px, 5vw, 52px);
+  font-family: "Playfair Display", serif;
+  margin-bottom: 20px;
+}
+
+.experience-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+}
+
+.experience-list li {
+  margin-bottom: 14px;
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+}
+
+/* ===============================
+   TESTIMONIALS
+================================= */
+.testimonials {
+  background: #faf8f5;
+  padding: 120px 0;
+  text-align: center;
+}
+
+.center {
+  max-width: 800px;
+  margin: auto;
+}
+
+/* ===============================
+   FINAL CTA
+================================= */
+.final-cta {
+  padding: 120px 0;
+  background: linear-gradient(to bottom, #111, #000);
+  color: #fff;
+  text-align: center;
+}
+
+.cta-box {
+  max-width: 800px;
+  margin: auto;
+}
+
+.final-cta h2 {
+  font-size: clamp(30px, 5vw, 54px);
+  font-family: "Playfair Display", serif;
+  margin-bottom: 16px;
+}
+
+.final-cta p {
+  color: rgba(255,255,255,0.75);
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+/* CTA BUTTONS */
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 14px 28px;
+  border-radius: 40px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s ease;
+  display: inline-block;
+}
+
+/* PRIMARY BUTTON */
+.btn.primary {
+  background: #d4af7a;
+  color: #111;
+}
+
+.btn.primary:hover {
+  transform: translateY(-3px);
+  background: #e6c48f;
+}
+
+/* GHOST BUTTON */
+.btn.ghost {
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+}
+
+.btn.ghost:hover {
+  background: white;
+  color: black;
+}
+
+/* ===============================
+   GLOBAL HEADINGS
+================================= */
+h2 {
+  font-family: "Playfair Display", serif;
+  letter-spacing: -0.5px;
+}

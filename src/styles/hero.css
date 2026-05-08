@@ -1,0 +1,92 @@
+.hero {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background (NOW CONTROLLED BY REACT INLINE STYLE) */
+.hero-bg {
+  position: absolute;
+  width: 100%;
+  height: 120%;
+  top: 0;
+  left: 0;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  transform: scale(1.05);
+}
+
+/* Overlay */
+.overlay {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  padding: 0 5%;
+
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* Content wrapper */
+.hero-content {
+  max-width: 900px;
+  color: white;
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #d4af7a;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+/* H1 */
+.hero-content h1 {
+  font-size: clamp(34px, 5vw, 68px);
+  line-height: 1.1;
+  margin-bottom: 20px;
+  font-family: "Playfair Display", serif;
+}
+
+/* Paragraph */
+.hero-content p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 30px;
+}
+
+/* Buttons */
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  padding: 12px 24px;
+  background: #d4af7a;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: black;
+}
+
+.btn-secondary {
+  padding: 12px 24px;
+  background: transparent;
+  border: 1px solid white;
+  cursor: pointer;
+  color: white;
+}

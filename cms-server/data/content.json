@@ -1,0 +1,24 @@
+{
+  "hero": {
+    "title": "Luxury Catering Experience",
+    "subtitle": "Chef-Chi Catering Luxembourg"
+  },
+  "about": {
+    "headline": "Crafting Unforgettable Culinary Moments",
+    "text": "We create premium catering experiences with elegance and precision."
+  },
+  "menu": [
+    {
+      "name": "Jollof Rice",
+      "category": "main",
+      "desc": "Smoky Nigerian party jollof"
+    }
+  ],
+  "gallery": [
+    {
+      "src": "/images/g1.jpg",
+      "title": "Luxury Event",
+      "category": "Events"
+    }
+  ]
+}

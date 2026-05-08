@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500&display=swap');
+
+:root {
+  --primary: #0f0f0f;
+  --accent: #c6a87d;
+  --bg: #ffffff;
+  --text: #222;
+  --muted: #777;
+}
+
+body {
+  padding-top: 70px;
+}
+
+
+/* 🌊 CINEMATIC BASE */
+body {
+  overflow-x: hidden;
+  background: #0b0b0b;
+  color: #fff;
+}
+
+/* ✨ smooth hover lift */
+.card, .service-card, .menu-card {
+  transition: all 0.4s ease;
+}
+
+.card:hover,
+.service-card:hover,
+.menu-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+/* 🎬 premium buttons */
+button, .btn {
+  transition: 0.3s ease;
+}
+
+button:hover, .btn:hover {
+  transform: scale(1.05);
+}
+
+/* 🌫 blur background depth feel */
+section {
+  will-change: transform;
+}
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.section {
+  padding: 100px 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+h1 {
+  font-size: clamp(36px, 5vw, 64px);
+  letter-spacing: -1px;
+}
+
+h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+p {
+  line-height: 1.8;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.section {
+  padding: 120px 0;
+}

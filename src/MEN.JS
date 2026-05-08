@@ -1,0 +1,195 @@
+{
+  "hero": {
+    "title": "Luxury Catering Experience",
+    "subtitle": "Elegant dining experiences"
+  },
+  "about": {
+    "headline": "Excellence Served Since Day One",
+    "text": "Chef-Chi Catering Service Luxembourg delivers unforgettable culinary experiences."
+  },
+  "menu": [
+    {
+      "name": "Pepper Chicken ",
+      "category": "starter",
+      "desc": "Spicy, flavorful chicken marinated in a blend of peppers and spices, grilled to perfection."
+    },
+    {
+      "name": "Pepper Turkey",
+      "category": "starter",
+      "desc": "Spicy, flavorful turkey marinated in a blend of peppers and spices, grilled to perfection."
+    },
+    {
+      "name": "Porridge Plantain ",
+      "category": "main",
+      "desc": "A traditional Nigerian dish made with plantain and a rich, flavorful broth."
+    },
+    {
+      "name": "White Rice + Stew (tomato or ayamase)",
+      "category": "main",
+      "desc": "Fluffy white rice served with your choice of rich tomato stew or spicy ayamase pepper sauce, accompanied by premium sides."
+    },
+    {
+      "name": "Meat pie",
+      "category": "starter",
+      "desc": "Flaky pastry filled with savory spiced meat, served with a side of tangy dipping sauce."
+    },
+    {
+      "name": "Egusi Soup ",
+      "category": "main",
+      "desc": "A traditional Nigerian soup made with ground melon seeds, leafy greens, and a rich, flavorful broth."
+    },
+    {
+      "name": "Oha Soup",
+      "category": "swallows & soups",
+      "desc": "A traditional Nigerian soup made with oha leaves and a rich, flavorful broth."
+    },
+    {
+      "name": "Fisherman Soup",
+      "category": "swallows & soups",
+      "desc": "A traditional Nigerian soup made with a variety of seafood and a rich, flavorful broth"
+    },
+    {
+      "name": "Ogbono Soup",
+      "category": "swallows & soups",
+      "desc": "A traditional Nigerian soup made with ogbono seeds and a rich, flavorful broth."
+    },
+    {
+      "name": "Vegetable soup",
+      "category": "swallows & soups",
+      "desc": "A traditional Nigerian soup made with a variety of vegetables and a rich, flavorful broth"
+    },
+    {
+      "name": "Porridge Yam",
+      "category": "main",
+      "desc": "A traditional Nigerian dish made with yam and a rich, flavorful broth"
+    },
+    {
+      "name": "Grilled Fish",
+      "category": "starter",
+      "desc": "A well prepared grilled fish with a rich, flavorful broth."
+    },
+    {
+      "name": "Ugba",
+      "category": "starter",
+      "desc": "A traditional Nigerian dish made with oil bean seeds and a rich, flavorful broth"
+    },
+    {
+      "name": "Ukwa",
+      "category": "starter",
+      "desc": "A traditional Nigerian dish made with breadfruit seeds and a rich, flavorful broth"
+    },
+    {
+      "name": "Fish rolls",
+      "category": "starter",
+      "desc": "Crispy rolls filled with seasoned fish, served with a tangy dipping sauce."
+    },
+    {
+      "name": "Puffs",
+      "category": "starter",
+      "desc": "Flaky pastry filled with savory spiced meat, served with a side of tangy dipping sauce."
+    },
+    {
+      "name": "Buns",
+      "category": "starter",
+      "desc": "Soft, sweet buns filled with a savory spiced meat mixture, perfect for snacking or as a side dish."
+    },
+    {
+      "name": "Zobo Drinks",
+      "category": "drink",
+      "desc": "A refreshing Nigerian drink made from hibiscus petals, served chilled with a hint of ginger and citrus."
+    },
+    {
+      "name": "Tiger Nut Drinks",
+      "category": "drink",
+      "desc": "A creamy, nutty beverage made from tiger nuts, served chilled for a refreshing treat."
+    },
+    {
+      "name": "Creamy vanilla ice cream",
+      "category": "dessert",
+      "desc": "Rich and creamy vanilla ice cream made with premium ingredients, perfect for a luxurious dessert experience."
+    },
+    {
+      "name": "Akara",
+      "category": "starter",
+      "desc": "Crispy fried bean cakes made from black-eyed peas, seasoned with onions and spices, served with a spicy dipping sauce."
+    },
+    {
+      "name": "Moi moi",
+      "category": "starter",
+      "desc": "Steamed bean pudding made from black-eyed peas, blended with onions, peppers, and spices, wrapped in banana leaves for a flavorful and moist dish."
+    },
+    {
+      "name": "Shawarma",
+      "category": "starter",
+      "desc": "Thinly sliced marinated meat (chicken or beef) cooked on a vertical rotisserie, served in warm pita bread with fresh vegetables and a drizzle of creamy garlic sauce."
+    }
+  ],
+  "gallery": [
+    {
+      "src": "http://localhost:5001/uploads/1778194033192-g12.jpg",
+      "title": "Birthday Setup",
+      "category": "Birthday"
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778194071521-g13.jpg",
+      "title": "Corporate Event Dining",
+      "category": "Corporate"
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778251593512-g1.jpg",
+      "title": "Ugba Catering",
+      "category": "Events    "
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778251656811-g2.jpg",
+      "title": "Executive Corporate Dining",
+      "category": "Corporate"
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778251807999-g3.jpg",
+      "title": "Private Chef Experience",
+      "category": "Private Dining     "
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778251844215-g4.jpg",
+      "title": "Outdoor Shawarma Event",
+      "category": "Outdoor Events\""
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778251868501-g5.jpg",
+      "title": "Fine Dining Presentation",
+      "category": "Cuisine"
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778251963666-g6.jpg",
+      "title": "Elegant Dessert Table",
+      "category": "Desserts    "
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778252002942-g8.jpg",
+      "title": "Elegant Event Setup",
+      "category": "Corporate"
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778252044465-g9.jpg",
+      "title": "Drinks & Beverages",
+      "category": "Drinks"
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778252236411-g10.jpg",
+      "title": "Nigerian Cuisine",
+      "category": "Cuisine    "
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778252274164-g11.jpg",
+      "title": " Luxury Wedding Cuisine",
+      "category": "Wedding"
+    },
+    {
+      "src": "http://localhost:5001/uploads/1778253242765-about.jpg",
+      "title": "Meet Our Chef",
+      "category": "Chef Chi"
+    }
+  ],
+  "services": []
+}

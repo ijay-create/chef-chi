@@ -1,0 +1,167 @@
+/* =========================
+   CONTACT SECTION
+========================= */
+.contact-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #0a0a0a, #111);
+  color: #fff;
+}
+
+/* =========================
+   WRAPPER
+========================= */
+.contact-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+/* =========================
+   LEFT SIDE (INFO)
+========================= */
+.contact-info .tag {
+  color: #c9a96e;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.contact-info h2 {
+  font-size: 42px;
+  margin: 15px 0;
+  font-weight: 600;
+}
+
+.contact-info p {
+  color: #ccc;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.contact-details p {
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+/* WHATSAPP BUTTON */
+.whatsapp-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 24px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #fff;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* =========================
+   FORM
+========================= */
+.contact-form {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 40px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* GRID */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* INPUTS */
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+/* FOCUS EFFECT */
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+  border: 1px solid #c9a96e;
+  background: #111;
+}
+
+/* TEXTAREA */
+.contact-form textarea {
+  margin-top: 15px;
+  resize: none;
+}
+
+/* =========================
+   BUTTON
+========================= */
+.contact-form button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #c9a96e, #a88c5a);
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.contact-form button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.contact-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   SUCCESS MESSAGE
+========================= */
+.success-msg {
+  margin-top: 15px;
+  color: #25d366;
+  font-size: 14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+  .contact-wrapper {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .contact-info h2 {
+    font-size: 32px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-form {
+    padding: 25px;
+  }
+}
