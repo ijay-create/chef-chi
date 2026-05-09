@@ -2,13 +2,13 @@
   {
     "id": 1,
     "email": "admin@chefchi.com",
-    "password": "HASHED_PASSWORD",
+    "password": "$2b$10$gbDYnOZVgNVZdfvKFDY.yu4kCz.5WJ5VAruSJwsLBl6o2SpNQvK4e",
     "role": "superadmin"
   },
   {
     "id": 2,
     "email": "editor@chefchi.com",
-    "password": "HASHED_PASSWORD",
+    "password": "$2b$10$gbDYnOZVgNVZdfvKFDY.yu4kCz.5WJ5VAruSJwsLBl6o2SpNQvK4e",
     "role": "editor"
   }
 ]
