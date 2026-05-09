@@ -16,6 +16,7 @@ import Menu from "./pages/Menu";
 import Login from "./pages/auth/Login";
 import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
+
 import Dashboard from "./pages/Dashboard";
 
 const AnimatedRoutes = () => {
@@ -25,6 +26,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
 
+        {/* PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
@@ -33,9 +35,10 @@ const AnimatedRoutes = () => {
         <Route path="/contact" element={<Contact />} />
 
         <Route path="/login" element={<Login />} />
-      
 
-        {/* ADMIN */}
+        {/* =========================
+            ADMIN ROUTES (PROTECTED)
+        ========================= */}
         <Route
           path="/admin"
           element={
@@ -45,8 +48,33 @@ const AnimatedRoutes = () => {
           }
         />
 
-        {/* FIX OLD ROUTE */}
-        <Route path="/dashboard" element={<Navigate to="/admin" replace />} />
+        {/* ROLE-SPECIFIC ROUTES (READY FOR FUTURE EXPANSION) */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/editor"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* LEGACY REDIRECT */}
+        <Route
+          path="/dashboard"
+          element={<Navigate to="/admin" replace />}
+        />
+
+        {/* CATCH ALL */}
+        <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
     </AnimatePresence>
@@ -58,9 +86,11 @@ const App = () => {
     <>
       <ScrollToTopOnRoute />
       <SmoothScroll />
+
       <Navbar />
       <AnimatedRoutes />
       <Footer />
+
       <WhatsAppFloat />
     </>
   );

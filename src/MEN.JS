@@ -197,3 +197,10 @@
 
 Email: admin@chefchi.com
 Password: admin123
+
+email: admin@chefchi.com
+password: admin123
+
+Editor account:
+email: editor@chefchi.com
+password: admin123

@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
 import { getContent, updateContent } from "../api/cms";
 import "../styles/dashboard.css";
 
@@ -14,7 +17,50 @@ const Dashboard = () => {
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false); 
+  const [dirty, setDirty] = useState(false);
+
+  const navigate = useNavigate();
+
+  /* =========================
+     AUTH GUARD + AUTO LOGOUT
+  ========================= */
+  useEffect(() => {
+    const token = localStorage.getItem("cms-token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+
+      if (!decoded?.exp) {
+        throw new Error("Invalid token");
+      }
+
+      const timeout = decoded.exp * 1000 - Date.now();
+
+      // already expired
+      if (timeout <= 0) {
+        localStorage.clear();
+        navigate("/login");
+        return;
+      }
+
+      const timer = setTimeout(() => {
+        localStorage.clear();
+        navigate("/login");
+      }, timeout);
+
+      return () => clearTimeout(timer);
+
+    } catch (err) {
+      console.error("Auth error:", err);
+      localStorage.clear();
+      navigate("/login");
+    }
+  }, [navigate]);
 
   /* =========================
      LOAD CMS
@@ -43,14 +89,14 @@ const Dashboard = () => {
   }, []);
 
   /* =========================
-     SAVE CMS (MANUAL)
+     SAVE CMS
   ========================= */
   const saveCMS = async () => {
     setSaving(true);
 
     try {
       await updateContent(content);
-      await loadCMS(); // refresh from backend
+      await loadCMS();
     } catch (err) {
       console.error("Save error:", err);
     }
@@ -58,11 +104,11 @@ const Dashboard = () => {
     setSaving(false);
   };
 
-  /* =========================
-     UPDATE HELPERS
-  ========================= */
   const markDirty = () => setDirty(true);
 
+  /* =========================
+     HERO
+  ========================= */
   const updateHero = (field, value) => {
     setContent((prev) => ({
       ...prev,
@@ -71,6 +117,9 @@ const Dashboard = () => {
     markDirty();
   };
 
+  /* =========================
+     ABOUT
+  ========================= */
   const updateAbout = (field, value) => {
     setContent((prev) => ({
       ...prev,
@@ -164,15 +213,11 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
 
-      {/* HEADER */}
       <div className="dashboard-header">
         <h1>Chef-Chi DASHBOARD</h1>
 
         <div style={{ display: "flex", gap: "10px" }}>
-
-          <button onClick={loadCMS}>
-            🔄 Refresh
-          </button>
+          <button onClick={loadCMS}>🔄 Refresh</button>
 
           <button
             onClick={saveCMS}
@@ -184,7 +229,6 @@ const Dashboard = () => {
           >
             {saving ? "Saving..." : "💾 Save Changes"}
           </button>
-
         </div>
       </div>
 
@@ -234,30 +278,22 @@ const Dashboard = () => {
             <input
               placeholder="Name"
               value={item.name}
-              onChange={(e) =>
-                updateMenuItem(i, "name", e.target.value)
-              }
+              onChange={(e) => updateMenuItem(i, "name", e.target.value)}
             />
 
             <input
               placeholder="Category"
               value={item.category}
-              onChange={(e) =>
-                updateMenuItem(i, "category", e.target.value)
-              }
+              onChange={(e) => updateMenuItem(i, "category", e.target.value)}
             />
 
             <textarea
               placeholder="Desc"
               value={item.desc}
-              onChange={(e) =>
-                updateMenuItem(i, "desc", e.target.value)
-              }
+              onChange={(e) => updateMenuItem(i, "desc", e.target.value)}
             />
 
-            <button onClick={() => removeMenuItem(i)}>
-              Delete
-            </button>
+            <button onClick={() => removeMenuItem(i)}>Delete</button>
 
           </div>
         ))}
@@ -274,41 +310,29 @@ const Dashboard = () => {
 
             <input
               type="file"
-              onChange={(e) =>
-                uploadImage(e.target.files[0], i)
-              }
+              onChange={(e) => uploadImage(e.target.files[0], i)}
             />
 
             <input
               placeholder="Title"
               value={item.title}
-              onChange={(e) =>
-                updateGalleryItem(i, "title", e.target.value)
-              }
+              onChange={(e) => updateGalleryItem(i, "title", e.target.value)}
             />
 
             <input
               placeholder="Category"
               value={item.category}
-              onChange={(e) =>
-                updateGalleryItem(i, "category", e.target.value)
-              }
+              onChange={(e) => updateGalleryItem(i, "category", e.target.value)}
             />
 
-            {item.src && (
-              <img src={item.src} width="120" />
-            )}
+            {item.src && <img src={item.src} width="120" />}
 
-            <button onClick={() => removeGalleryItem(i)}>
-              Delete
-            </button>
+            <button onClick={() => removeGalleryItem(i)}>Delete</button>
 
           </div>
         ))}
 
-        <button onClick={addGalleryItem}>
-          + Add Image
-        </button>
+        <button onClick={addGalleryItem}>+ Add Image</button>
       </section>
 
     </div>
