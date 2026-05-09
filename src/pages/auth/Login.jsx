@@ -22,7 +22,11 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5001/api/login", {
+
+      const BASE_URL =
+        import.meta.env.VITE_API_URL || "http://localhost:5001";
+
+      const res = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,9 +34,9 @@ const Login = () => {
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           password: password.trim(),
-        }),
+       }),
       });
-
+    
       const data = await res.json();
 
       // ❌ LOGIN FAILED
