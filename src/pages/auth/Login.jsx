@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/auth.css";
 
+const BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5001";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,10 +25,6 @@ const Login = () => {
     setError("");
 
     try {
-
-      const BASE_URL =
-        import.meta.env.VITE_API_URL || "http://localhost:5001";
-
       const res = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: {
@@ -34,31 +33,32 @@ const Login = () => {
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           password: password.trim(),
-       }),
+        }),
       });
-    
+
       const data = await res.json();
 
-      // ❌ LOGIN FAILED
+      // LOGIN FAILED
       if (!res.ok) {
         setError(data?.error || "Invalid credentials");
         setLoading(false);
         return;
       }
 
-      // ✅ STORE REAL CMS SESSION (NO FALLBACKS)
+      // STORE SESSION
       localStorage.setItem("cms-token", data.token);
       localStorage.setItem("admin-user", JSON.stringify(data.user));
-
-      // optional flag (only for UI checks if needed)
       localStorage.setItem("admin-auth", "true");
 
-      // 🚀 redirect to admin dashboard
+      // REDIRECT
       navigate("/admin", { replace: true });
 
     } catch (err) {
       console.error("Login error:", err);
-      setError("Server not responding. Make sure backend is running on port 5001");
+
+      setError(
+        "Unable to connect to server. Please try again."
+      );
     }
 
     setLoading(false);

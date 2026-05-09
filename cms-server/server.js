@@ -7,6 +7,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { fileURLToPath } from "url";
 
+/* =========================
+   SETUP
+========================= */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,14 +19,21 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
+/* =========================
+   FILE PATHS
+========================= */
 const FILE = path.join(__dirname, "content.json");
 const USERS_FILE = path.join(__dirname, "users.json");
 const UPLOAD_DIR = path.join(__dirname, "uploads");
 
-const JWT_SECRET = "cms_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is missing in environment variables");
+}
 
 /* =========================
-   INIT FILES
+   INIT FILES SAFELY
 ========================= */
 const ensureFile = (file, data) => {
   if (!fs.existsSync(file)) {
@@ -35,7 +45,8 @@ ensureFile(FILE, {
   hero: { title: "", subtitle: "" },
   about: { headline: "", text: "" },
   menu: [],
-  gallery: []
+  gallery: [],
+  services: []
 });
 
 ensureFile(USERS_FILE, [
@@ -48,16 +59,16 @@ ensureFile(USERS_FILE, [
 ]);
 
 if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR);
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
 /* =========================
-   STATIC FILES (CRITICAL FIX)
+   STATIC FILES
 ========================= */
 app.use("/uploads", express.static(UPLOAD_DIR));
 
 /* =========================
-   BASE ROUTE
+   HEALTH CHECK
 ========================= */
 app.get("/", (req, res) => {
   res.send("🚀 CMS v3 Running");
@@ -67,50 +78,93 @@ app.get("/", (req, res) => {
    GET CONTENT
 ========================= */
 app.get("/api/content", (req, res) => {
-  const data = JSON.parse(fs.readFileSync(FILE, "utf-8"));
-  res.json(data);
+  try {
+    const data = JSON.parse(fs.readFileSync(FILE, "utf-8"));
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read content" });
+  }
 });
 
 /* =========================
-   SAVE CONTENT
+   UPDATE CONTENT
 ========================= */
 app.post("/api/content", (req, res) => {
-  const existing = JSON.parse(fs.readFileSync(FILE, "utf-8"));
+  try {
+    const existing = JSON.parse(fs.readFileSync(FILE, "utf-8"));
 
-  const updated = {
-    ...existing,
-    ...req.body
-  };
+    const updated = {
+      ...existing,
+      ...req.body
+    };
 
-  fs.writeFileSync(FILE, JSON.stringify(updated, null, 2));
+    fs.writeFileSync(FILE, JSON.stringify(updated, null, 2));
 
-  res.json({ success: true, data: updated });
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    res.status(500).json({ error: "Save failed" });
+  }
 });
 
 /* =========================
-   UPLOAD IMAGE (FIXED URL)
+   MULTER CONFIG
 ========================= */
-app.post("/api/upload", multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, UPLOAD_DIR),
-    filename: (req, file, cb) => {
-      cb(null, `${Date.now()}-${file.originalname}`);
-    }
-  })
-}).single("image"), (req, res) => {
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+  filename: (req, file, cb) => {
+    const unique = `${Date.now()}-${file.originalname}`;
+    cb(null, unique);
+  }
+});
 
+const upload = multer({ storage });
+
+/* =========================
+   UPLOAD IMAGE
+========================= */
+app.post("/api/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
   const baseUrl = `${req.protocol}://${req.get("host")}`;
-
   const url = `${baseUrl}/uploads/${req.file.filename}`;
 
-  res.json({
-    success: true,
-    url
-  });
+  res.json({ success: true, url });
+});
+
+/* =========================
+   LOGIN (FIXED)
+========================= */
+app.post("/api/login", (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const users = JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+
+    const user = users.find(u => u.email === email);
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const isMatch = bcrypt.compareSync(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({ token, user });
+
+  } catch (err) {
+    res.status(500).json({ error: "Login server error" });
+  }
 });
 
 /* =========================
