@@ -6,29 +6,38 @@ import "../styles/gallery.css";
 import heroImg from "../assets/images/g2.jpg";
 
 /* =========================
-   API URL
+   API BASE
 ========================= */
 const BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5001";
+  import.meta.env.VITE_API_URL?.replace(/\/$/, "") ||
+  "https://chef-chi.onrender.com";
 
+/* =========================
+   SAFE STRING HELPER
+========================= */
+const clean = (value) =>
+  typeof value === "string" ? value.trim() : "";
+
+/* =========================
+   GALLERY
+========================= */
 const Gallery = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   /* =========================
-     LOAD CMS GALLERY
+     LOAD CMS
   ========================= */
   useEffect(() => {
     const loadGallery = async () => {
       try {
         const data = await getContent();
 
-        if (Array.isArray(data?.gallery)) {
-          setImages(data.gallery);
-        } else {
-          setImages([]);
-        }
+        const gallery = Array.isArray(data?.gallery)
+          ? data.gallery
+          : [];
 
+        setImages(gallery);
       } catch (err) {
         console.error("❌ Gallery load error:", err);
         setImages([]);
@@ -41,46 +50,36 @@ const Gallery = () => {
   }, []);
 
   /* =========================
-     FIX IMAGE URLS
+     IMAGE FIX (ROBUST)
   ========================= */
   const getImageUrl = (src) => {
-    if (!src) {
-      return heroImg;
-    }
+    if (!src || typeof src !== "string") return heroImg;
 
-    // already full URL
-    if (src.startsWith("http")) {
-      return src;
-    }
+    // full external URL
+    if (src.startsWith("http")) return src;
 
-    // remove accidental double slashes
-    const cleanSrc = src.startsWith("/")
-      ? src
-      : `/${src}`;
+    // normalize path
+    const path = src.startsWith("/") ? src : `/${src}`;
 
-    return `${BASE_URL}${cleanSrc}`;
+    return `${BASE_URL}${path}`;
   };
 
   /* =========================
      ANIMATION
   ========================= */
   const luxuryVariant = {
-    hidden: (direction) => ({
+    hidden: (dir) => ({
       opacity: 0,
-      x: direction === "left" ? -120 : 120,
+      x: dir === "left" ? -120 : 120,
       scale: 0.9,
       filter: "blur(6px)",
     }),
-
     show: {
       opacity: 1,
       x: 0,
       scale: 1,
       filter: "blur(0px)",
-      transition: {
-        duration: 0.7,
-        ease: "easeOut",
-      },
+      transition: { duration: 0.7, ease: "easeOut" },
     },
   };
 
@@ -101,32 +100,20 @@ const Gallery = () => {
       {/* HERO */}
       <section
         className="gallery-hero"
-        style={{
-          backgroundImage: `url(${heroImg})`,
-        }}
+        style={{ backgroundImage: `url(${heroImg})` }}
       >
         <div className="gallery-overlay">
 
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+          <motion.span initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             Chef-Chi Experiences
           </motion.span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+          <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}>
             Our Signature Gallery
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            Discover unforgettable celebrations,
-            elegant cuisine, and luxury catering.
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            Discover unforgettable celebrations, elegant cuisine, and luxury catering.
           </motion.p>
 
         </div>
@@ -134,41 +121,28 @@ const Gallery = () => {
 
       {/* INTRO */}
       <section className="gallery-intro section container">
-
         <div className="gallery-intro-grid">
 
           <div>
-            <span className="mini-tag">
-              Crafted Excellence
-            </span>
-
-            <h2>
-              Moments Served with Elegance
-            </h2>
+            <span className="mini-tag">Crafted Excellence</span>
+            <h2>Moments Served with Elegance</h2>
           </div>
 
           <p>
-            From private dining experiences
-            to grand wedding receptions,
-            every Chef-Chi event is designed
-            with sophistication and unforgettable
-            presentation.
+            From private dining experiences to grand wedding receptions,
+            every Chef-Chi event is designed with sophistication.
           </p>
 
         </div>
-
       </section>
 
-      {/* GALLERY GRID */}
+      {/* GRID */}
       <section className="section container">
-
         <div className="gallery-grid">
 
           {images.length > 0 ? (
             images.map((item, index) => {
-
-              const direction =
-                index % 2 === 0 ? "left" : "right";
+              const direction = index % 2 === 0 ? "left" : "right";
 
               return (
                 <motion.div
@@ -178,15 +152,12 @@ const Gallery = () => {
                   custom={direction}
                   initial="hidden"
                   whileInView="show"
-                  viewport={{
-                    once: false,
-                    amount: 0.2,
-                  }}
+                  viewport={{ once: false, amount: 0.2 }}
                 >
 
                   <img
                     src={getImageUrl(item?.src)}
-                    alt={item?.title || "Gallery Image"}
+                    alt={clean(item?.title) || "Gallery Image"}
                     loading="lazy"
                     onError={(e) => {
                       e.target.src = heroImg;
@@ -196,11 +167,11 @@ const Gallery = () => {
                   <div className="gallery-content">
 
                     <span>
-                      {item?.category?.trim() || "Gallery"}
+                      {clean(item?.category) || "Gallery"}
                     </span>
 
                     <h3>
-                      {item?.title?.trim() || "Chef-Chi Event"}
+                      {clean(item?.title) || "Chef-Chi Event"}
                     </h3>
 
                   </div>
@@ -213,30 +184,21 @@ const Gallery = () => {
           )}
 
         </div>
-
       </section>
 
       {/* CTA */}
       <section className="gallery-cta">
-
         <div className="container">
 
-          <h2>
-            Create Your Own Luxury Experience
-          </h2>
+          <h2>Create Your Own Luxury Experience</h2>
 
           <p>
-            Let Chef-Chi Catering transform
-            your event into a world-class
-            culinary memory.
+            Let Chef-Chi Catering transform your event into a world-class memory.
           </p>
 
-          <a href="/contact">
-            Book an Event
-          </a>
+          <a href="/contact">Book an Event</a>
 
         </div>
-
       </section>
 
     </section>

@@ -10,8 +10,6 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 
-
-
 /* =========================
    SETUP
 ========================= */
@@ -38,6 +36,31 @@ if (!JWT_SECRET) {
 }
 
 /* =========================
+   CLEANERS (NEW 🧠)
+========================= */
+const cleanText = (value) => {
+  if (!value || typeof value !== "string") return "";
+  return value
+    .replace(/\\/g, "")
+    .replace(/"/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+const cleanCategory = (value) => cleanText(value);
+
+const validateImagePath = (src) => {
+  if (!src || typeof src !== "string") return null;
+
+  const cleaned = src.trim();
+
+  if (!cleaned.startsWith("/uploads/")) return null;
+  if (cleaned.includes("..") || cleaned.includes("\\")) return null;
+
+  return cleaned;
+};
+
+/* =========================
    SAFE FILE INIT
 ========================= */
 const ensureFile = (file, data) => {
@@ -55,9 +78,7 @@ ensureFile(FILE, {
   services: []
 });
 
-/* =========================
-   USERS INIT (FIXED)
-========================= */
+/* USERS INIT */
 const initUsers = () => {
   if (!fs.existsSync(USERS_FILE)) {
     const defaultUser = [
@@ -75,9 +96,7 @@ const initUsers = () => {
 
 initUsers();
 
-/* =========================
-   UPLOAD FOLDER
-========================= */
+/* UPLOAD FOLDER */
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
@@ -107,17 +126,55 @@ app.get("/api/content", (req, res) => {
 });
 
 /* =========================
-   UPDATE CONTENT
+   UPDATE CONTENT (AUTO-CLEANER 🔥)
 ========================= */
 app.post("/api/content", (req, res) => {
   try {
     const existing = JSON.parse(fs.readFileSync(FILE, "utf-8"));
+    const incoming = req.body;
 
-    const updated = { ...existing, ...req.body };
+    const cleanMenu = Array.isArray(incoming.menu)
+      ? incoming.menu.map(item => ({
+          name: cleanText(item.name),
+          category: cleanCategory(item.category),
+          desc: cleanText(item.desc)
+        }))
+      : existing.menu;
+
+    const cleanGallery = Array.isArray(incoming.gallery)
+      ? incoming.gallery
+          .map(item => {
+            const src = validateImagePath(item.src);
+            if (!src) return null;
+
+            return {
+              src,
+              title: cleanText(item.title),
+              category: cleanCategory(item.category)
+            };
+          })
+          .filter(Boolean)
+      : existing.gallery;
+
+    const updated = {
+      ...existing,
+      ...incoming,
+      menu: cleanMenu,
+      gallery: cleanGallery,
+      hero: {
+        title: cleanText(incoming.hero?.title || existing.hero.title),
+        subtitle: cleanText(incoming.hero?.subtitle || existing.hero.subtitle)
+      },
+      about: {
+        headline: cleanText(incoming.about?.headline || existing.about.headline),
+        text: cleanText(incoming.about?.text || existing.about.text)
+      }
+    };
 
     fs.writeFileSync(FILE, JSON.stringify(updated, null, 2));
 
     res.json({ success: true, data: updated });
+
   } catch {
     res.status(500).json({ error: "Save failed" });
   }
@@ -128,6 +185,7 @@ app.post("/api/content", (req, res) => {
 ========================= */
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
   }
@@ -136,20 +194,39 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* =========================
-   UPLOAD IMAGE
+   UPLOAD IMAGE (HARDENED)
 ========================= */
 app.post("/api/upload", upload.single("image"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ error: "Invalid file type" });
+    }
+
+    const filename = cleanText(req.file.filename);
+
+    if (!filename) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ error: "Invalid filename" });
+    }
+
+    const url = `${req.protocol}://${req.get("host")}/uploads/${filename}`;
+
+    res.json({ success: true, url });
+
+  } catch {
+    res.status(500).json({ error: "Upload failed" });
   }
-
-  const url = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-
-  res.json({ success: true, url });
 });
 
 /* =========================
-   LOGIN
+   LOGIN (SAFE)
 ========================= */
 app.post("/api/login", (req, res) => {
   try {

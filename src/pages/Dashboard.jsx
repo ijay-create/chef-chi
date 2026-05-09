@@ -14,7 +14,7 @@ const Dashboard = () => {
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false); // 🔥 track changes
+  const [dirty, setDirty] = useState(false); 
 
   /* =========================
      LOAD CMS
@@ -159,14 +159,14 @@ const Dashboard = () => {
   /* =========================
      UI
   ========================= */
-  if (loading) return <h2>🚀 Loading CMS...</h2>;
+  if (loading) return <h2>Loading CMS...</h2>;
 
   return (
     <div className="dashboard">
 
       {/* HEADER */}
       <div className="dashboard-header">
-        <h1>🔥 Chef-Chi CMS</h1>
+        <h1>Chef-Chi DASHBOARD</h1>
 
         <div style={{ display: "flex", gap: "10px" }}>
 
