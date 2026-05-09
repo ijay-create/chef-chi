@@ -2,7 +2,7 @@
   {
     "id": 1,
     "email": "admin@chefchi.com",
-    "password": "admin123",
+    "password": "$2b$10$YlhnOcrSFdK79BQgB/7/IuiH4NuwSltassjbm2sczuZJyRUicqOye",
     "role": "admin"
   }
 ]

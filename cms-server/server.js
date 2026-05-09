@@ -5,7 +5,12 @@ import multer from "multer";
 import path from "path";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import { fileURLToPath } from "url";
+
+dotenv.config();
+
+
 
 /* =========================
    SETUP
@@ -33,7 +38,7 @@ if (!JWT_SECRET) {
 }
 
 /* =========================
-   INIT FILES SAFELY
+   SAFE FILE INIT
 ========================= */
 const ensureFile = (file, data) => {
   if (!fs.existsSync(file)) {
@@ -41,6 +46,7 @@ const ensureFile = (file, data) => {
   }
 };
 
+/* CONTENT INIT */
 ensureFile(FILE, {
   hero: { title: "", subtitle: "" },
   about: { headline: "", text: "" },
@@ -49,15 +55,29 @@ ensureFile(FILE, {
   services: []
 });
 
-ensureFile(USERS_FILE, [
-  {
-    id: 1,
-    email: "admin@cms.com",
-    password: bcrypt.hashSync("admin123", 10),
-    role: "admin"
-  }
-]);
+/* =========================
+   USERS INIT (FIXED)
+========================= */
+const initUsers = () => {
+  if (!fs.existsSync(USERS_FILE)) {
+    const defaultUser = [
+      {
+        id: 1,
+        email: "admin@cms.com",
+        password: bcrypt.hashSync("admin123", 10),
+        role: "admin"
+      }
+    ];
 
+    fs.writeFileSync(USERS_FILE, JSON.stringify(defaultUser, null, 2));
+  }
+};
+
+initUsers();
+
+/* =========================
+   UPLOAD FOLDER
+========================= */
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
@@ -81,7 +101,7 @@ app.get("/api/content", (req, res) => {
   try {
     const data = JSON.parse(fs.readFileSync(FILE, "utf-8"));
     res.json(data);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to read content" });
   }
 });
@@ -93,15 +113,12 @@ app.post("/api/content", (req, res) => {
   try {
     const existing = JSON.parse(fs.readFileSync(FILE, "utf-8"));
 
-    const updated = {
-      ...existing,
-      ...req.body
-    };
+    const updated = { ...existing, ...req.body };
 
     fs.writeFileSync(FILE, JSON.stringify(updated, null, 2));
 
     res.json({ success: true, data: updated });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Save failed" });
   }
 });
@@ -112,8 +129,7 @@ app.post("/api/content", (req, res) => {
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
-    const unique = `${Date.now()}-${file.originalname}`;
-    cb(null, unique);
+    cb(null, `${Date.now()}-${file.originalname}`);
   }
 });
 
@@ -127,14 +143,13 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  const baseUrl = `${req.protocol}://${req.get("host")}`;
-  const url = `${baseUrl}/uploads/${req.file.filename}`;
+  const url = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
 
   res.json({ success: true, url });
 });
 
 /* =========================
-   LOGIN (FIXED)
+   LOGIN
 ========================= */
 app.post("/api/login", (req, res) => {
   try {
@@ -162,7 +177,7 @@ app.post("/api/login", (req, res) => {
 
     res.json({ token, user });
 
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Login server error" });
   }
 });

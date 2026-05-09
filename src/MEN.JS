@@ -193,3 +193,7 @@
   ],
   "services": []
 }
+
+
+Email: admin@chefchi.com
+Password: admin123
