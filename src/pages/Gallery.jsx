@@ -5,6 +5,9 @@ import "../styles/gallery.css";
 
 import heroImg from "../assets/images/g2.jpg";
 
+/* =========================
+   API URL
+========================= */
 const BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:5001";
 
@@ -13,14 +16,19 @@ const Gallery = () => {
   const [loading, setLoading] = useState(true);
 
   /* =========================
-     LOAD CMS
+     LOAD CMS GALLERY
   ========================= */
   useEffect(() => {
     const loadGallery = async () => {
       try {
         const data = await getContent();
 
-        setImages(Array.isArray(data?.gallery) ? data.gallery : []);
+        if (Array.isArray(data?.gallery)) {
+          setImages(data.gallery);
+        } else {
+          setImages([]);
+        }
+
       } catch (err) {
         console.error("❌ Gallery load error:", err);
         setImages([]);
@@ -33,16 +41,24 @@ const Gallery = () => {
   }, []);
 
   /* =========================
-     IMAGE FIXER (CRITICAL FIX)
+     FIX IMAGE URLS
   ========================= */
   const getImageUrl = (src) => {
-    if (!src) return "";
+    if (!src) {
+      return heroImg;
+    }
 
     // already full URL
-    if (src.startsWith("http")) return src;
+    if (src.startsWith("http")) {
+      return src;
+    }
 
-    // local upload path
-    return `${BASE_URL}${src}`;
+    // remove accidental double slashes
+    const cleanSrc = src.startsWith("/")
+      ? src
+      : `/${src}`;
+
+    return `${BASE_URL}${cleanSrc}`;
   };
 
   /* =========================
@@ -55,6 +71,7 @@ const Gallery = () => {
       scale: 0.9,
       filter: "blur(6px)",
     }),
+
     show: {
       opacity: 1,
       x: 0,
@@ -67,6 +84,9 @@ const Gallery = () => {
     },
   };
 
+  /* =========================
+     LOADING
+  ========================= */
   if (loading) {
     return (
       <div className="section container">
@@ -81,20 +101,32 @@ const Gallery = () => {
       {/* HERO */}
       <section
         className="gallery-hero"
-        style={{ backgroundImage: `url(${heroImg})` }}
+        style={{
+          backgroundImage: `url(${heroImg})`,
+        }}
       >
         <div className="gallery-overlay">
 
-          <motion.span initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             Chef-Chi Experiences
           </motion.span>
 
-          <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             Our Signature Gallery
           </motion.h1>
 
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            Discover unforgettable celebrations, elegant cuisine, and luxury catering.
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            Discover unforgettable celebrations,
+            elegant cuisine, and luxury catering.
           </motion.p>
 
         </div>
@@ -102,29 +134,41 @@ const Gallery = () => {
 
       {/* INTRO */}
       <section className="gallery-intro section container">
+
         <div className="gallery-intro-grid">
 
           <div>
-            <span className="mini-tag">Crafted Excellence</span>
-            <h2>Moments Served with Elegance</h2>
+            <span className="mini-tag">
+              Crafted Excellence
+            </span>
+
+            <h2>
+              Moments Served with Elegance
+            </h2>
           </div>
 
           <p>
-            From private dining experiences to grand wedding receptions,
-            every Chef-Chi event is designed with sophistication.
+            From private dining experiences
+            to grand wedding receptions,
+            every Chef-Chi event is designed
+            with sophistication and unforgettable
+            presentation.
           </p>
 
         </div>
+
       </section>
 
-      {/* GRID */}
+      {/* GALLERY GRID */}
       <section className="section container">
 
         <div className="gallery-grid">
 
           {images.length > 0 ? (
             images.map((item, index) => {
-              const direction = index % 2 === 0 ? "left" : "right";
+
+              const direction =
+                index % 2 === 0 ? "left" : "right";
 
               return (
                 <motion.div
@@ -134,18 +178,31 @@ const Gallery = () => {
                   custom={direction}
                   initial="hidden"
                   whileInView="show"
-                  viewport={{ once: false, amount: 0.2 }}
+                  viewport={{
+                    once: false,
+                    amount: 0.2,
+                  }}
                 >
 
                   <img
                     src={getImageUrl(item?.src)}
-                    alt={item?.title || "Gallery"}
+                    alt={item?.title || "Gallery Image"}
                     loading="lazy"
+                    onError={(e) => {
+                      e.target.src = heroImg;
+                    }}
                   />
 
                   <div className="gallery-content">
-                    <span>{item?.category || "Gallery"}</span>
-                    <h3>{item?.title || "Chef-Chi Event"}</h3>
+
+                    <span>
+                      {item?.category?.trim() || "Gallery"}
+                    </span>
+
+                    <h3>
+                      {item?.title?.trim() || "Chef-Chi Event"}
+                    </h3>
+
                   </div>
 
                 </motion.div>
@@ -164,13 +221,19 @@ const Gallery = () => {
 
         <div className="container">
 
-          <h2>Create Your Own Luxury Experience</h2>
+          <h2>
+            Create Your Own Luxury Experience
+          </h2>
 
           <p>
-            Let Chef-Chi Catering transform your event into a world-class memory.
+            Let Chef-Chi Catering transform
+            your event into a world-class
+            culinary memory.
           </p>
 
-          <a href="/contact">Book an Event</a>
+          <a href="/contact">
+            Book an Event
+          </a>
 
         </div>
 
