@@ -103,6 +103,16 @@ const auth = (req, res, next) => {
   }
 };
 
+const requireRole = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    next();
+  };
+};
+
 /* =========================
    HEALTH CHECK
 ========================= */
@@ -121,7 +131,7 @@ app.get("/api/content", (req, res) => {
 /* =========================
    UPDATE CONTENT
 ========================= */
-app.post("/api/content", auth, (req, res) => {
+app.post("/api/content", auth, requireRole("super_admin"), (req, res) => {
   try {
     const existing = JSON.parse(fs.readFileSync(FILE));
     const updated = { ...existing, ...req.body };
@@ -198,10 +208,29 @@ app.post("/api/upload", auth, upload.single("image"), async (req, res) => {
     res.json({
       success: true,
       url: result.secure_url,
+      public_id: result.public_id,
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Upload failed" });
+  }
+});
+
+app.delete("/api/upload/:public_id", auth, async (req, res) => {
+  try {
+    const { public_id } = req.params;
+
+    const result = await cloudinary.v2.uploader.destroy(public_id);
+    if (result.result !== "ok") {
+      return res.status(500).json({ error: "Delete failed" });
+    }
+
+    logAction(req.user, "DELETE IMAGE");
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Delete failed" });
   }
 });
 

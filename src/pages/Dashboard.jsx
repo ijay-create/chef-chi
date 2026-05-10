@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+import ImageUploader from "../components/ImageUploader";
 import { getContent, updateContent } from "../api/cms";
 import "../styles/dashboard.css";
 
@@ -17,6 +18,7 @@ const DEFAULT_CONTENT = {
 
 const Dashboard = () => {
   const [content, setContent] = useState(DEFAULT_CONTENT);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -37,7 +39,9 @@ const Dashboard = () => {
     try {
       const decoded = jwtDecode(token);
 
-      if (!decoded?.exp) throw new Error("Invalid token");
+      if (!decoded?.exp) {
+        throw new Error("Invalid token");
+      }
 
       const timeout = decoded.exp * 1000 - Date.now();
 
@@ -53,8 +57,12 @@ const Dashboard = () => {
       }, timeout);
 
       return () => clearTimeout(timer);
-    } catch {
+
+    } catch (err) {
+      console.error(err);
+
       localStorage.clear();
+
       navigate("/login", { replace: true });
     }
   }, [navigate]);
@@ -74,6 +82,7 @@ const Dashboard = () => {
       });
 
       setDirty(false);
+
     } catch (err) {
       console.error("CMS load error:", err);
     }
@@ -93,7 +102,9 @@ const Dashboard = () => {
 
     try {
       await updateContent(content);
+
       await loadCMS();
+
     } catch (err) {
       console.error("Save error:", err);
     }
@@ -104,44 +115,79 @@ const Dashboard = () => {
   const markDirty = () => setDirty(true);
 
   /* =========================
-     HERO + ABOUT
+     HERO
   ========================= */
-  const updateHero = (f, v) =>
-    setContent((p) => ({
-      ...p,
-      hero: { ...p.hero, [f]: v },
-    })) || markDirty();
+  const updateHero = (field, value) => {
+    setContent((prev) => ({
+      ...prev,
+      hero: {
+        ...prev.hero,
+        [field]: value,
+      },
+    }));
 
-  const updateAbout = (f, v) =>
-    setContent((p) => ({
-      ...p,
-      about: { ...p.about, [f]: v },
-    })) || markDirty();
+    markDirty();
+  };
+
+  /* =========================
+     ABOUT
+  ========================= */
+  const updateAbout = (field, value) => {
+    setContent((prev) => ({
+      ...prev,
+      about: {
+        ...prev.about,
+        [field]: value,
+      },
+    }));
+
+    markDirty();
+  };
 
   /* =========================
      MENU
   ========================= */
   const addMenuItem = () => {
-    setContent((p) => ({
-      ...p,
-      menu: [...p.menu, { name: "", category: "", desc: "" }],
+    setContent((prev) => ({
+      ...prev,
+      menu: [
+        ...prev.menu,
+        {
+          id: crypto.randomUUID(),
+          name: "",
+          category: "",
+          desc: "",
+        },
+      ],
     }));
+
     markDirty();
   };
 
-  const updateMenuItem = (i, f, v) => {
-    const updated = [...content.menu];
-    updated[i][f] = v;
+  const updateMenuItem = (index, field, value) => {
+    setContent((prev) => {
+      const updated = [...prev.menu];
 
-    setContent((p) => ({ ...p, menu: updated }));
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        menu: updated,
+      };
+    });
+
     markDirty();
   };
 
-  const removeMenuItem = (i) => {
-    setContent((p) => ({
-      ...p,
-      menu: p.menu.filter((_, idx) => idx !== i),
+  const removeMenuItem = (index) => {
+    setContent((prev) => ({
+      ...prev,
+      menu: prev.menu.filter((_, i) => i !== index),
     }));
+
     markDirty();
   };
 
@@ -149,40 +195,102 @@ const Dashboard = () => {
      GALLERY
   ========================= */
   const addGalleryItem = () => {
-    setContent((p) => ({
-      ...p,
-      gallery: [...p.gallery, { src: "", title: "", category: "" }],
+    setContent((prev) => ({
+      ...prev,
+      gallery: [
+        ...prev.gallery,
+        {
+          id: crypto.randomUUID(),
+          src: "",
+          title: "",
+          category: "",
+          public_id: "",
+        },
+      ],
     }));
+
     markDirty();
   };
 
-  const updateGalleryItem = (i, f, v) => {
-    const updated = [...content.gallery];
-    updated[i][f] = v;
+  const updateGalleryItem = (index, field, value) => {
+    setContent((prev) => {
+      const updated = [...prev.gallery];
 
-    setContent((p) => ({ ...p, gallery: updated }));
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        gallery: updated,
+      };
+    });
+
     markDirty();
   };
 
-  const removeGalleryItem = (i) => {
-    setContent((p) => ({
-      ...p,
-      gallery: p.gallery.filter((_, idx) => idx !== i),
+  const deleteCloudinaryImage = async (public_id) => {
+    try {
+      const token = localStorage.getItem("cms-token");
+
+      await fetch(
+        `${BASE_URL}/api/upload/${encodeURIComponent(public_id)}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+    } catch (err) {
+      console.error("Cloudinary delete failed:", err);
+    }
+  };
+
+  const removeGalleryItem = async (index) => {
+    const item = content.gallery[index];
+
+    if (item?.public_id) {
+      await deleteCloudinaryImage(item.public_id);
+    }
+
+    setContent((prev) => ({
+      ...prev,
+      gallery: prev.gallery.filter((_, i) => i !== index),
     }));
+
     markDirty();
   };
 
   /* =========================
-     UPLOAD (FIXED FOR CLOUDINARY BACKEND)
+     CLOUDINARY UPLOAD
   ========================= */
   const uploadImage = async (file, index) => {
     if (!file) return;
 
-    const token = localStorage.getItem("cms-token");
-    const formData = new FormData();
-    formData.append("image", file);
-
     try {
+      const token = localStorage.getItem("cms-token");
+
+      const formData = new FormData();
+
+      formData.append("image", file);
+
+      setContent((prev) => {
+        const updated = [...prev.gallery];
+
+        updated[index] = {
+          ...updated[index],
+          uploading: true,
+        };
+
+        return {
+          ...prev,
+          gallery: updated,
+        };
+      });
+
       const res = await fetch(`${BASE_URL}/api/upload`, {
         method: "POST",
         headers: {
@@ -197,26 +305,51 @@ const Dashboard = () => {
         throw new Error(data?.error || "Upload failed");
       }
 
-      updateGalleryItem(index, "src", data.url);
+      setContent((prev) => {
+        const updated = [...prev.gallery];
+
+        updated[index] = {
+          ...updated[index],
+          src: data.url,
+          public_id: data.public_id,
+          uploading: false,
+        };
+
+        return {
+          ...prev,
+          gallery: updated,
+        };
+      });
+
+      markDirty();
+
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Upload failed — check server / Cloudinary config");
+
+      alert("Image upload failed");
     }
   };
 
   /* =========================
      UI
   ========================= */
-  if (loading) return <h2>Loading CMS...</h2>;
+  if (loading) {
+    return <h2>Loading CMS...</h2>;
+  }
 
   return (
     <div className="dashboard">
 
+      {/* HEADER */}
       <div className="dashboard-header">
+
         <h1>Chef-Chi Dashboard</h1>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button onClick={loadCMS}>🔄 Refresh</button>
+
+          <button onClick={loadCMS}>
+            🔄 Refresh
+          </button>
 
           <button
             onClick={saveCMS}
@@ -228,92 +361,138 @@ const Dashboard = () => {
           >
             {saving ? "Saving..." : "💾 Save"}
           </button>
+
         </div>
+
       </div>
 
-      {dirty && <p style={{ color: "orange" }}>⚠ Unsaved changes</p>}
+      {dirty && (
+        <p style={{ color: "orange" }}>
+          ⚠ Unsaved changes
+        </p>
+      )}
 
       {/* HERO */}
       <section>
+
         <h2>Hero</h2>
 
         <input
           placeholder="Title"
           value={content.hero.title}
-          onChange={(e) => updateHero("title", e.target.value)}
+          onChange={(e) =>
+            updateHero("title", e.target.value)
+          }
         />
 
         <input
           placeholder="Subtitle"
           value={content.hero.subtitle}
-          onChange={(e) => updateHero("subtitle", e.target.value)}
+          onChange={(e) =>
+            updateHero("subtitle", e.target.value)
+          }
         />
+
       </section>
 
       {/* ABOUT */}
       <section>
+
         <h2>About</h2>
 
         <input
           placeholder="Headline"
           value={content.about.headline}
-          onChange={(e) => updateAbout("headline", e.target.value)}
+          onChange={(e) =>
+            updateAbout("headline", e.target.value)
+          }
         />
 
         <textarea
           placeholder="Text"
           value={content.about.text}
-          onChange={(e) => updateAbout("text", e.target.value)}
+          onChange={(e) =>
+            updateAbout("text", e.target.value)
+          }
         />
+
       </section>
 
       {/* MENU */}
       <section>
+
         <h2>Menu</h2>
 
         {content.menu.map((item, i) => (
-          <div key={i} className="card">
+          <div
+            key={item.id || i}
+            className="card"
+          >
+
             <input
               placeholder="Name"
               value={item.name}
-              onChange={(e) => updateMenuItem(i, "name", e.target.value)}
+              onChange={(e) =>
+                updateMenuItem(i, "name", e.target.value)
+              }
             />
 
             <input
               placeholder="Category"
               value={item.category}
-              onChange={(e) => updateMenuItem(i, "category", e.target.value)}
+              onChange={(e) =>
+                updateMenuItem(i, "category", e.target.value)
+              }
             />
 
             <textarea
-              placeholder="Desc"
+              placeholder="Description"
               value={item.desc}
-              onChange={(e) => updateMenuItem(i, "desc", e.target.value)}
+              onChange={(e) =>
+                updateMenuItem(i, "desc", e.target.value)
+              }
             />
 
-            <button onClick={() => removeMenuItem(i)}>Delete</button>
+            <button onClick={() => removeMenuItem(i)}>
+              Delete
+            </button>
+
           </div>
         ))}
 
-        <button onClick={addMenuItem}>+ Add Menu</button>
+        <button onClick={addMenuItem}>
+          + Add Menu
+        </button>
+
       </section>
 
       {/* GALLERY */}
       <section>
+
         <h2>Gallery</h2>
 
         {content.gallery.map((item, i) => (
-          <div key={i} className="card">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => uploadImage(e.target.files[0], i)}
+          <div
+            key={item.id || i}
+            className="card"
+          >
+
+            <ImageUploader
+              onUpload={(file) =>
+                uploadImage(file, i)
+              }
             />
+
+            {item.uploading && (
+              <p>Uploading...</p>
+            )}
 
             <input
               placeholder="Title"
               value={item.title}
-              onChange={(e) => updateGalleryItem(i, "title", e.target.value)}
+              onChange={(e) =>
+                updateGalleryItem(i, "title", e.target.value)
+              }
             />
 
             <input
@@ -325,14 +504,26 @@ const Dashboard = () => {
             />
 
             {item.src && (
-              <img src={item.src} width="120" alt="preview" />
+              <img
+                src={item.src}
+                alt={item.title || "gallery"}
+                width="140"
+              />
             )}
 
-            <button onClick={() => removeGalleryItem(i)}>Delete</button>
+            <button
+              onClick={() => removeGalleryItem(i)}
+            >
+              Delete
+            </button>
+
           </div>
         ))}
 
-        <button onClick={addGalleryItem}>+ Add Image</button>
+        <button onClick={addGalleryItem}>
+          + Add Image
+        </button>
+
       </section>
 
     </div>
