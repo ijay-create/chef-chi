@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/auth.css";
 
-const BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5001";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Login = () => {
   const [email, setEmail] = useState("");
