@@ -1,12 +1,14 @@
 import express from "express";
 import cors from "cors";
 import fs from "fs";
-import multer from "multer";
-import path from "path";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
+import path from "path";
+import multer from "multer";
+import cloudinary from "cloudinary";
+import streamifier from "streamifier";
 
 dotenv.config();
 
@@ -23,21 +25,26 @@ app.use(cors());
 app.use(express.json());
 
 /* =========================
+   CLOUDINARY CONFIG 
+========================= */
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+/* =========================
    FILE PATHS
 ========================= */
 const FILE = path.join(__dirname, "content.json");
 const USERS_FILE = path.join(__dirname, "users.json");
 const LOGS_FILE = path.join(__dirname, "logs.json");
-const UPLOAD_DIR = path.join(__dirname, "uploads");
 
 const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET is missing in environment variables");
-}
+if (!JWT_SECRET) throw new Error("JWT_SECRET missing");
 
 /* =========================
-   SAFE INIT
+   INIT FILES
 ========================= */
 const ensureFile = (file, data) => {
   if (!fs.existsSync(file)) {
@@ -45,7 +52,6 @@ const ensureFile = (file, data) => {
   }
 };
 
-/* CONTENT */
 ensureFile(FILE, {
   hero: { title: "", subtitle: "" },
   about: { headline: "", text: "" },
@@ -54,7 +60,6 @@ ensureFile(FILE, {
   services: [],
 });
 
-/* USERS (ROLE SYSTEM ) */
 ensureFile(USERS_FILE, [
   {
     id: 1,
@@ -64,21 +69,14 @@ ensureFile(USERS_FILE, [
   },
 ]);
 
-/* LOGS (NEW ) */
 ensureFile(LOGS_FILE, []);
 
-/* UPLOAD DIR */
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
-
-app.use("/uploads", express.static(UPLOAD_DIR));
-
 /* =========================
-   HELPERS
+   LOG SYSTEM 
 ========================= */
 const logAction = (user, action) => {
   const logs = JSON.parse(fs.readFileSync(LOGS_FILE));
+
   logs.push({
     user: user?.email,
     role: user?.role,
@@ -95,9 +93,7 @@ const logAction = (user, action) => {
 const auth = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
-  if (!token) {
-    return res.status(401).json({ error: "No token" });
-  }
+  if (!token) return res.status(401).json({ error: "No token" });
 
   try {
     req.user = jwt.verify(token, JWT_SECRET);
@@ -108,10 +104,10 @@ const auth = (req, res, next) => {
 };
 
 /* =========================
-   HEALTH
+   HEALTH CHECK
 ========================= */
 app.get("/", (req, res) => {
-  res.send("CMS v4 Running (PRO MODE)");
+  res.send("CMS v4 PRO RUNNING");
 });
 
 /* =========================
@@ -123,7 +119,7 @@ app.get("/api/content", (req, res) => {
 });
 
 /* =========================
-   UPDATE CONTENT + LOGGING 
+   UPDATE CONTENT
 ========================= */
 app.post("/api/content", auth, (req, res) => {
   try {
@@ -141,7 +137,7 @@ app.post("/api/content", auth, (req, res) => {
 });
 
 /* =========================
-   USERS LOGIN
+   LOGIN
 ========================= */
 app.post("/api/login", (req, res) => {
   try {
@@ -170,24 +166,43 @@ app.post("/api/login", (req, res) => {
 });
 
 /* =========================
-   UPLOAD (SAFE)
+   CLOUDINARY UPLOAD
 ========================= */
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
-  filename: (req, file, cb) =>
-    cb(null, `${Date.now()}-${file.originalname}`),
-});
+const upload = multer({ storage: multer.memoryStorage() });
 
-const upload = multer({ storage });
+app.post("/api/upload", auth, upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-app.post("/api/upload", auth, upload.single("image"), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No file" });
+    const uploadStream = () =>
+      new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+          {
+            folder: "chef-chi",
+          },
+          (error, result) => {
+            if (result) resolve(result);
+            else reject(error);
+          }
+        );
 
-  const url = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
 
-  logAction(req.user, "UPLOAD IMAGE");
+    const result = await uploadStream();
 
-  res.json({ success: true, url });
+    logAction(req.user, "UPLOAD IMAGE");
+
+    res.json({
+      success: true,
+      url: result.secure_url,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Upload failed" });
+  }
 });
 
 /* =========================
@@ -196,7 +211,7 @@ app.post("/api/upload", auth, upload.single("image"), (req, res) => {
 app.get("/api/analytics", auth, (req, res) => {
   const logs = JSON.parse(fs.readFileSync(LOGS_FILE));
 
-  const totalUploads = logs.filter((l) =>
+  const uploads = logs.filter((l) =>
     l.action.includes("UPLOAD")
   ).length;
 
@@ -209,8 +224,8 @@ app.get("/api/analytics", auth, (req, res) => {
   ).length;
 
   res.json({
-    users: logins,
-    uploads: totalUploads,
+    uploads,
+    logins,
     updates,
     logs: logs.slice(-20),
   });
@@ -220,5 +235,5 @@ app.get("/api/analytics", auth, (req, res) => {
    START SERVER
 ========================= */
 app.listen(PORT, () => {
-  console.log(`CMS v4 running on port ${PORT}`);
+  console.log(`CMS v4 PRO running on port ${PORT}`);
 });
