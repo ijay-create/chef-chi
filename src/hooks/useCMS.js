@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 
+const BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5001";
+
 const useCMS = () => {
   const [content, setContent] = useState(null);
 
@@ -7,7 +10,7 @@ const useCMS = () => {
     const loadContent = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5001/api/content"
+          `${BASE_URL}/api/content`
         );
 
         const data = await res.json();
